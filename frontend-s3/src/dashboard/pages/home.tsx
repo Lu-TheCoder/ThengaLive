@@ -1,29 +1,30 @@
-import { ArrowRight, Eye, FileText, ScanQrCode, Star, TvMinimalPlay, X, Send, Heart, ShoppingCart, CirclePlay } from "lucide-react";
+import { ArrowRight, Eye, FileText, ScanQrCode, Star, TvMinimalPlay, X, Send, Heart, ShoppingCart, CirclePlay, Bell, Share2 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import type { Product } from "../data/products";
 import { useShop } from "../state/shop";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
-import { products, formatRand, getFallbackImage } from "../data/products";
+import { products, scheduledLiveSessions, formatRand} from "../data/products";
+
+import video1 from "../../assets/video/live_feed_sheep.mp4";
 
 export default function Home() {
     const trending = [...products].sort((a, b) => b.rating - a.rating).slice(0, 2);
-    const liveSessions = [...products].sort((a, b) => b.rating - a.rating).slice(2, 4);
-    const livePreviewVideos = [
-        "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4",
-        "https://media.w3.org/2010/05/bunny/trailer.mp4",
-    ];
 
     const chatUsers = ["Sibongile", "Thabo", "Naledi", "Kamo", "Lerato", "Andile", "Palesa", "Neo"];
     const chatTexts = [
-        "Looks amazing!",
-        "Is this still available?",
-        "What a bargain",
-        "Where is pickup?",
-        "Love the quality",
-        "Shipping time?",
-        "Please review the price",
-        "I'm interested",
+        // Zulu
+        "Sicela usondeze ikhamera ezimvini.", // Please bring the camera closer to the sheep
+        "Zibiza malini lezi zimvu?", // How much are these sheep?
+        "Ngingazithola nini?", // When can I get them?
+        "Zitholakala kuphi?", // Where are they available?
+        "Ngabe zikhona izaphulelo?", // Are there discounts?
+        // Setswana
+        "Kgopela go atametsa khamera mo dinkung.", // Please move the camera closer to the sheep
+        "Di bitsa bokae dinku tse?", // How much do these sheep cost?
+        "Re ka di tsaya leng?", // When can we get them?
+        "Di gokae gore re di lebelele?", // Where are they for viewing?
+        "A go nale dithekiso kgotsa diskaonte?", // Are there promotions or discounts?
     ];
     type ChatMsg = { id: string; user: string; text: string };
     const [chatMessages, setChatMessages] = useState<ChatMsg[]>(() => (
@@ -117,18 +118,18 @@ export default function Home() {
                 <div className="flex flex-col gap-2  flex-1 pr-4 h-full">
                     <div className="flex flex-row items-center gap-2">
                         <TvMinimalPlay className="w-5 h-5 text-[#ff8484]" />
-                        <span className="text-md text-[#6d6d6d]">Trending Live Product</span>
+                        <span className="text-md text-[#6d6d6d]">Current Live Auction</span>
                     </div>
                     <div className="relative rounded-xl overflow-hidden w-full h-full bg-black">
                         <video
                             className="w-full h-full object-cover"
-                            src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4"
+                            src={video1}
                             controls
                             playsInline
                             autoPlay
                             muted
                             loop
-                            onClick={() => { setSelectedLiveProduct(trending[0] ?? null); setSelectedLiveVideoSrc("https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4"); setIsLiveFullscreen(true); }}
+                            onClick={() => { setSelectedLiveProduct(trending[0] ?? null); setSelectedLiveVideoSrc(video1); setIsLiveFullscreen(true); }}
                             style={{ cursor: 'pointer' }}
                         />
                         <div className="absolute top-2 right-2 bottom-2 w-1/3 min-w-[260px] bg-black/30 backdrop-blur-sm rounded-lg overflow-hidden shadow flex flex-col">
@@ -149,7 +150,7 @@ export default function Home() {
                             <div className="relative flex-1 flex items-center justify-center p-4">
                                 <video
                                     className="w-full h-full object-contain"
-                                    src={selectedLiveVideoSrc ?? "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4"}
+                                    src={selectedLiveVideoSrc ?? "https://videos.pexels.com/video-files/3209820/3209820-hd_1280_720_24fps.mp4"}
                                     controls
                                     autoPlay
                                     playsInline
@@ -215,40 +216,46 @@ export default function Home() {
                 <div className="flex flex-col gap-2  w-full h-full flex-1">
                     <div className="flex flex-row items-center gap-2">
                         <CirclePlay className="w-5 h-5 text-[#ff8484]" />
-                        <span className="text-md text-[#6d6d6d] ">Other Live Sessions</span>
+                        <span className="text-md text-[#6d6d6d] ">Scheduled Live Sessions</span>
                     </div>
                     <div className="grid grid-cols-2 gap-2 h-full">
-                        {liveSessions.map((p, i) => (
-                            <button key={p.id} onClick={() => { setSelectedLiveProduct(p); setSelectedLiveVideoSrc(livePreviewVideos[i % livePreviewVideos.length]); setIsLiveFullscreen(true); }} className="text-left flex flex-col gap-2 rounded-2xl h-full bg-white border-2 border-[#ececec] overflow-hidden outline-none focus:outline-none focus-visible:outline-none ring-0 focus:ring-0 transition-transform duration-150 ease-out hover:scale-[1.01]">
+                        {scheduledLiveSessions.map((p) => (
+                            <div key={p.id} className="text-left flex flex-col gap-2 rounded-2xl h-full bg-[#d5d5d55f] border-2 border-[#e4e4e4] overflow-hidden outline-none focus:outline-none focus-visible:outline-none ring-0 focus:ring-0 transition-transform duration-150 ease-out hover:scale-[1.01]">
                                 <div className="relative w-full h-[140px]">
-                                    <video
-                                        className="w-full h-full object-cover rounded-xl overflow-hidden"
-                                        src={livePreviewVideos[i % livePreviewVideos.length]}
-                                        muted
-                                        autoPlay
-                                        loop
-                                        playsInline
-                                    />
-                                    <span className="absolute top-2 left-2 text-[10px] px-2 py-[2px] rounded-full bg-[#ff3b30] text-white">LIVE</span>
+                                    <img src={p.image} alt={p.title} className="w-full h-full object-cover rounded-xl overflow-hidden" />
+                                    <span className="absolute top-2 left-2 text-[10px] px-2 py-[2px] rounded-full bg-[#3c2d2c] text-white">LIVE SOON</span>
                                     <span className="absolute top-2 right-2 text-[10px] px-2 py-[2px] rounded-full bg-black/60 text-white flex items-center gap-1">
                                         <Eye className="w-3 h-3" />
-                                        {Math.floor(320 + i * 57)}
+                                        {/* {Math.floor(320 + i * 57)} */}
+                                        0
                                     </span>
                                 </div>
-                                <div className="flex flex-col gap-1 px-2 pb-2">
-                                    <span className="text-[#525151] font-semibold text-sm line-clamp-1">{p.title} - Live Review</span>
-                                    <div className="flex flex-row items-center gap-2 text-xs text-[var(--text-color)]">
-                                        <span className="text-[#797979]">with {p.location.split(',')[0]}</span>
+                                <div className="flex flex-col gap-2 justify-between h-full">
+                                    <div className="flex flex-col gap-1 px-2 pb-2">
+                                        <span className="text-[#414141] font-semibold text-sm line-clamp-1">{p.title}</span>
+                                        <div className="flex flex-row items-center gap-2 text-xs text-[var(--text-color)]">
+                                            <span className="text-[#808080]">{p.location.split(',')[0]}</span>
+                                        </div>
+                                    </div>
+                                    <div className="flex flex-row items-center justify-between px-2 pb-3">
+                                        <div className="text-xs px-3 py-3 rounded-md bg-[#191919] text-[#ffecd0] flex items-center gap-1 cursor-pointer" onClick={() => alert(`Reminder set for ${p.title} at ${p.time}`)}>
+                                            <Bell className="w-3 h-3" />
+                                            Remind Me
+                                        </div>
+                                        <div className="text-xs text-[#e6e6e6] px-4 py-3 bg-[#191919] rounded-md border border-[#d1d1d1] flex items-center gap-1 cursor-pointer" onClick={() => navigator.clipboard.writeText(window.location.origin + '/?live=' + p.id)}>
+                                            <Share2 className="w-3 h-3" />
+                                            Share
+                                        </div>
                                     </div>
                                 </div>
-                            </button>
+                            </div>
                         ))}
                     </div>
                 </div>
             </section>
 
             {/* NEW CATEGORIES: Fashion */}
-            <section className="flex flex-col gap-2 py-4 bg-[#efefef] rounded-tr-4xl rounded-tl-4xl">
+            {/* <section className="flex flex-col gap-2 py-4 bg-[#efefef] rounded-tr-4xl rounded-tl-4xl">
                 <div className="flex flex-col gap-4 px-4">
                     <div className="flex flex-row items-center justify-between">
                         <span className="text-2xl font-semibold text-[var(--text-color)] ">Local Fashion</span>
@@ -282,10 +289,10 @@ export default function Home() {
                         ))}
                     </div>
                 </div>
-            </section>
+            </section> */}
 
             {/* NEW CATEGORIES: Furniture */}
-            <section className="flex flex-col gap-2 py-4 bg-[#efefef]">
+            {/* <section className="flex flex-col gap-2 py-4 bg-[#efefef]">
                 <div className="flex flex-col gap-4 px-4">
                     <div className="flex flex-row items-center justify-between">
                         <span className="text-2xl font-semibold text-[var(--text-color)] ">Local Furniture</span>
@@ -319,10 +326,10 @@ export default function Home() {
                         ))}
                     </div>
                 </div>
-            </section>
+            </section> */}
 
             {/* NEW CATEGORIES: Artworks */}
-            <section className="flex flex-col gap-2 py-4 bg-[#efefef]">
+            {/* <section className="flex flex-col gap-2 py-4 bg-[#efefef]">
                 <div className="flex flex-col gap-4 px-4">
                     <div className="flex flex-row items-center justify-between">
                         <span className="text-2xl font-semibold text-[var(--text-color)] ">Local Artworks</span>
@@ -356,7 +363,7 @@ export default function Home() {
                         ))}
                     </div>
                 </div>
-            </section>
+            </section> */}
 
             {/* Hubs */}
             <section className="flex flex-col gap-2 bg-[#efefef]">

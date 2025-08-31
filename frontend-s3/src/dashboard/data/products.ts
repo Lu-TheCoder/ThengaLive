@@ -8,6 +8,10 @@ import product2_ from "../../assets/fresh_produce/product2_.png";
 import product3_ from "../../assets/fresh_produce/product3_.png";
 import product4_ from "../../assets/fresh_produce/product4_.png";
 
+import farmer1 from "../../assets/farmers/farmer1_.png";
+import farmer2 from "../../assets/farmers/farmer2_.png";
+
+
 export type Product = {
     id: string;
     title: string;
@@ -17,6 +21,15 @@ export type Product = {
     rating: number; // 0 - 5
     reviews: number;
     location: string;
+};
+
+export type ScheduledLiveSession = {
+    id: string;
+    title: string;
+    category: "live";
+    image: string;
+    location: string;
+    time: string;
 };
 
 const locations = [
@@ -61,6 +74,11 @@ export const products: Product[] = [
     { id: "402", title: "Beaded Artwork", category: "art", image: "https://media.istockphoto.com/id/621834314/photo/beaded-giraffe.jpg?s=612x612&w=0&k=20&c=grVanX0ltdyXCRRt0y2RHLjO7hqbmMglOgZLKDDmv2Q=", price: 700, rating: generateRating(), reviews: generateReviews(), location: randomLocation() },
     { id: "403", title: "Clay Sculpture", category: "art", image: "https://i0.wp.com/sundayworld.co.za/wp-content/uploads/2022/10/P18-mabasa-art-jpg.webp?resize=696%2C462&ssl=1", price: 2200, rating: generateRating(), reviews: generateReviews(), location: randomLocation() },
     { id: "404", title: "Photography Print", category: "art", image: "https://source.unsplash.com/600x600/?photography,print", price: 450, rating: generateRating(), reviews: generateReviews(), location: randomLocation() },
+];
+
+export const scheduledLiveSessions: ScheduledLiveSession[] = [
+    { id: "501", title: "Ntate Moloto's Monthly Sheep Sale", category: "live", image: farmer1, location: "Mahikeng, Unit 8", time: "10:00"  },
+    { id: "502", title: "Bongani's Cow Auction", category: "live", image: farmer2, location: "Mahikeng, Unit 8", time: "10:00" },
 ];
 
 export const getProductById = (id: string): Product | undefined => {

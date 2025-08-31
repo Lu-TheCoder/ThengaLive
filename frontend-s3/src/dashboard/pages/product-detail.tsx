@@ -14,20 +14,21 @@ export default function ProductDetail() {
     const videoSrc = getProductVideoSrc(product.id);
     type ChatMsg = { id: string; user: string; text: string };
     const [chatMessages, setChatMessages] = useState<ChatMsg[]>([
-        { id: '1', user: 'Viewer1', text: 'Awesome product!' },
-        { id: '2', user: 'Viewer2', text: 'How much is delivery?' },
+        { id: '1', user: 'Thabo', text: 'Kgopela go atametsa khamera mo dinkung.' },
+        { id: '2', user: 'Sibongile', text: 'Zibiza malini lezi zimvu?' },
+        { id: '3', user: 'Naledi', text: 'Re ka di tsaya leng?' },
     ]);
     const overlayChatRef = useRef<HTMLDivElement | null>(null);
 
     useEffect(() => {
-        (window as any).chtlConfig = { chatbotId: "6869519482" };
+        (window as any).chtlConfig = { chatbotId: "7818721895" };
         const existing = document.getElementById("chtl-script") as HTMLScriptElement | null;
         if (!existing) {
             const s = document.createElement("script");
             s.id = "chtl-script";
             s.async = true;
             s.type = "text/javascript";
-            s.setAttribute("data-id", "6869519482");
+            s.setAttribute("data-id", "7818721895");
             s.src = "https://chatling.ai/js/embed.js";
             document.body.appendChild(s);
         }
