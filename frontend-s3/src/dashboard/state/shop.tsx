@@ -9,6 +9,7 @@ type ShopState = {
     wishlist: string[];
     addToCart: (id: string, quantity?: number) => void;
     removeFromCart: (id: string) => void;
+    setCartQuantity: (id: string, quantity: number) => void;
     clearCart: () => void;
     addToWishlist: (id: string) => void;
     removeFromWishlist: (id: string) => void;
@@ -66,6 +67,14 @@ export function ShopProvider({ children }: { children: React.ReactNode }) {
         setCart((prev) => prev.filter((c) => c.id !== id));
     }, []);
 
+    const setCartQuantity = useCallback((id: string, quantity: number) => {
+        const q = Math.max(1, Math.floor(quantity));
+        setCart((prev) => {
+            const exists = prev.some((c) => c.id === id);
+            return exists ? prev.map((c) => (c.id === id ? { ...c, quantity: q } : c)) : [...prev, { id, quantity: q }];
+        });
+    }, []);
+
     const clearCart = useCallback(() => setCart([]), []);
 
     const addToWishlist = useCallback((id: string) => {
@@ -111,6 +120,7 @@ export function ShopProvider({ children }: { children: React.ReactNode }) {
             wishlist,
             addToCart,
             removeFromCart,
+            setCartQuantity,
             clearCart,
             addToWishlist,
             removeFromWishlist,

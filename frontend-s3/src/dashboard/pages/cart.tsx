@@ -2,9 +2,10 @@ import { formatRand } from "../data/products";
 import { Trash2, CheckCircle2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useShop } from "../state/shop";
+import QuantitySelector from "../components/QuantitySelector";
 
 export default function Cart() {
-    const { getCartProducts, getCartTotal, removeFromCart, checkout } = useShop();
+    const { getCartProducts, getCartTotal, removeFromCart, checkout, setCartQuantity } = useShop();
     const items = getCartProducts();
     const total = getCartTotal();
 
@@ -19,7 +20,9 @@ export default function Cart() {
                             <img src={product.image} alt={product.title} className="w-20 h-20 object-cover rounded-lg" />
                             <div className="flex flex-col flex-1">
                                 <Link to={`/products/${product.id}`} className="text-[var(--text-color)] font-medium">{product.title}</Link>
-                                <span className="text-[#797979] text-xs">Qty: {quantity}</span>
+                                <div className="flex items-center gap-2 mt-1">
+                                    <QuantitySelector value={quantity} onChange={(q) => setCartQuantity(product.id, q)} />
+                                </div>
                             </div>
                             <span className="text-[var(--text-color)] font-semibold">{formatRand(product.price * quantity)}</span>
                             <button className="p-2 hover:bg-[#efefef] rounded" onClick={() => removeFromCart(product.id)}>
