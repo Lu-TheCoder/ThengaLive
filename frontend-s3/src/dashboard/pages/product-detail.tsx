@@ -1,13 +1,23 @@
-import { Heart, Pencil, ShoppingCart, Star } from "lucide-react";
-import { useEffect } from "react";
+import { Heart, Pencil, ShoppingCart, Star, X, Send } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
-import { getProductById, formatRand, getFallbackImage } from "../data/products";
+import { getProductById, formatRand, getFallbackImage, getProductVideoSrc } from "../data/products";
 import { useShop } from "../state/shop";
+// no-op
 
 export default function ProductDetail() {
     const { id = "1" } = useParams();
     const product = getProductById(id) || getProductById("1")!;
     const { addToCart, toggleWishlist, isInWishlist, isInCart } = useShop();
+    const [isLiveFullscreen, setIsLiveFullscreen] = useState(false);
+    const [chatInput, setChatInput] = useState("");
+    const videoSrc = getProductVideoSrc(product.id);
+    type ChatMsg = { id: string; user: string; text: string };
+    const [chatMessages, setChatMessages] = useState<ChatMsg[]>([
+        { id: '1', user: 'Viewer1', text: 'Awesome product!' },
+        { id: '2', user: 'Viewer2', text: 'How much is delivery?' },
+    ]);
+    const overlayChatRef = useRef<HTMLDivElement | null>(null);
 
     useEffect(() => {
         (window as any).chtlConfig = { chatbotId: "6869519482" };
@@ -27,10 +37,8 @@ export default function ProductDetail() {
         <section className="flex flex-col gap-6 p-4 w-full">
             <div className="flex flex-col gap-2">
                 <span className="text-xl font-semibold text-[var(--text-color)]">Live Review</span>
-                <div className="flex flex-col gap-2 rounded-xl overflow-hidden">
-                    <video className="w-full h-[360px]" controls preload="metadata">
-                                <source src="/sample.mp4#t=0.1" type="video/mp4" />
-                    </video>
+                <div className="relative flex flex-col gap-2 rounded-xl overflow-hidden bg-black">
+                    <video className="w-full h-[360px] object-cover" src={videoSrc} controls playsInline autoPlay muted loop onClick={() => setIsLiveFullscreen(true)} style={{ cursor: 'pointer' }} />
                 </div>
             </div>
             <div className="grid grid-cols-2 gap-6">
@@ -143,6 +151,35 @@ export default function ProductDetail() {
                         </div>
                     </div> */}
             </div>
+
+            {isLiveFullscreen && (
+                <div className="fixed inset-0 z-50 bg-black/90 flex">
+                    <div className="relative flex-1 flex items-center justify-center p-4">
+                        <video className="w-full h-full object-contain" src={videoSrc} controls autoPlay playsInline loop />
+                        <button className="absolute top-4 right-4 p-2 rounded bg-black/50 hover:bg-black/60" onClick={() => setIsLiveFullscreen(false)}>
+                            <X className="w-5 h-5 text-white" />
+                        </button>
+                    </div>
+                    <div className="w-[380px] max-w-[45vw] bg-black/40 backdrop-blur-md border-l border-white/10 flex flex-col">
+                        <div className="px-4 py-3 text-xs tracking-wide text-[#ededed] border-b border-white/10">Live Chat</div>
+                        <div ref={overlayChatRef} className="flex-1 overflow-y-auto p-3 space-y-2">
+                            {chatMessages.map((m) => (
+                                <div key={m.id} className="fade-in-up text-[12px] leading-5">
+                                    <span className="font-semibold text-[#ffb78b] mr-1">{m.user}:</span>
+                                    <span className="text-[#f1f1f1]">{m.text}</span>
+                                </div>
+                            ))}
+                        </div>
+                        <form onSubmit={(e) => { e.preventDefault(); const t = chatInput.trim(); if (!t) return; setChatMessages((prev) => [...prev, { id: `${Date.now()}`, user: 'You', text: t }]); setChatInput(""); setTimeout(() => { if (overlayChatRef.current) overlayChatRef.current.scrollTop = overlayChatRef.current.scrollHeight; }, 0); }} className="p-3 border-t border-white/10 flex items-center gap-2">
+                            <input value={chatInput} onChange={(e) => setChatInput(e.target.value)} placeholder="Say something..." className="flex-1 bg-white/10 text-white placeholder-white/40 px-3 py-2 rounded outline-none focus:outline-none" />
+                            <button type="submit" className="px-3 py-2 bg-[#ff8a65] hover:bg-[#ff7a50] text-white rounded flex items-center gap-1">
+                                <Send className="w-4 h-4" />
+                                Send
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            )}
         </section>
     );
 }

@@ -76,4 +76,22 @@ export const getFallbackImage = (category: Product["category"], id: string): str
     return `https://picsum.photos/seed/${category}-${id}/600/600`;
 }
 
+// Deterministic per-product video sources for previews/details
+const productVideoSources: string[] = [
+    "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4",
+    "https://media.w3.org/2010/05/bunny/trailer.mp4",
+    "https://media.w3.org/2010/05/sintel/trailer.mp4",
+    "https://media.w3.org/2010/05/video/movie_300.mp4",
+    "https://media.w3.org/2010/05/bunny/movie.mp4",
+    "https://media.w3.org/2010/05/sintel/trailer.mp4#t=0.1",
+];
+
+export const getProductVideoSrc = (id: string): string => {
+    // Simple hash based on id
+    let hash = 0;
+    for (let i = 0; i < id.length; i++) hash = (hash * 31 + id.charCodeAt(i)) >>> 0;
+    const idx = hash % productVideoSources.length;
+    return productVideoSources[idx];
+}
+
 
