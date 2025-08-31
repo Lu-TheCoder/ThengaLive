@@ -1,4 +1,4 @@
-import { ArrowRight, Eye, FileText, ScanQrCode, Star, TrendingUp, TvMinimalPlay, X, Send, Heart, ShoppingCart, CirclePlay } from "lucide-react";
+import { ArrowRight, Eye, FileText, ScanQrCode, Star, TvMinimalPlay, X, Send, Heart, ShoppingCart, CirclePlay } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import type { Product } from "../data/products";
 import { useShop } from "../state/shop";
