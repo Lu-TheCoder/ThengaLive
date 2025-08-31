@@ -1,15 +1,28 @@
 import express from "express";
 const app = express();
 import cors from "cors";
-import { uploadVideoFile, createBucket, getFile, uploadImageFile } from "./store/store.js";
-import multer, { memoryStorage } from "multer";
+import { uploadFile, createBucket, getFile, getImageProductsPresignedUrls } from "./store/store.js";
+import multer from "multer";
 
 app.use(cors());
 
 app.use(express.json());
 
-const storage = memoryStorage();
-const upload = multer({ storage });
+const fileFilter = (req, file, cb) => {
+    if (
+        file.mimetype === "video/mp4" ||
+        file.mimetype === "image/jpeg" ||
+        file.mimetype === "image/jpg"
+    ) {
+        cb(null, true);
+    } else {
+        cb(null, false);
+    }
+}
+
+const storage = multer.memoryStorage();
+const upload = multer({ storage, fileFilter: fileFilter });
+
 
 app.post("/create-bucket", (req, res) => {
     const { bucketName } = req.body;
@@ -17,17 +30,34 @@ app.post("/create-bucket", (req, res) => {
     res.status(200).json({ message: "Bucket created successfully" });
 })
 
-app.post("/upload", upload.single("file"), (req, res) => {
+app.post("/upload", upload.single("video"), (req, res) => {
     const { file } = req;
     const { bucketName, key, filePath } = req.body;
 
-    console.log("file", file);
+    console.log("file from mutler", file);
     
-    uploadVideoFile("my-bucket-name-1756492988136", "videos/my-video.mp4", "assets/vid1.mp4", {
-        contentType: "video/mp4",
-        acl: "public-read",
+    uploadFile(file, {
+            contentType: file.mimetype,
+            acl: "public-read",
     });
+    
     res.status(200).json({ message: "File uploaded successfully" });
+})
+
+app.get("/get-files", async (req, res) => {
+    const user_id = "";
+
+    if (!user_id) {
+        return res.status(400).json({ message: "User ID is required" });
+    }
+
+    const {error, presignedUrls} = await getImageProductsPresignedUrls(user_id);
+    if (error) {
+        return res.status(400).json({ message: error.message });
+    }
+  
+    res.status(200).json(presignedUrls);
+    
 })
 
 app.post("/upload-image", (req, res) => {

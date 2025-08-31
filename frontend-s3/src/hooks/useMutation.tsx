@@ -18,7 +18,7 @@ const useMutation = ({ url, method = 'POST' }: { url: string, method: string }) 
             url,
             method,
             data,
-        }).then((res) => {
+        }).then(() => {
             setState((prev) => ({ ...prev, loading: false, error: null}));
         }).catch((err) => {
             setState((prev) => ({ ...prev, loading: false, error: err }));

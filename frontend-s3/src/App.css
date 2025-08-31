@@ -1,42 +1,38 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+@import "tailwindcss";
+
+:root {
+  --primary-color: #007bff;
+  --secondary-color: #6c757d;
+  --background-color: #f8f9fa;
+  --text-color: #212529;
+  --text-color-hover: #ababab;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+body {
+  background-color: var(--background-color);
+  font-family: 'Poppins', sans-serif;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
+@keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(6px);
   }
-  to {
-    transform: rotate(360deg);
+  100% {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+.fade-in-up {
+  animation: fadeInUp 320ms ease-out both;
 }
 
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
-}
+.fade-delay-1 { animation-delay: 60ms; }
+.fade-delay-2 { animation-delay: 120ms; }
+.fade-delay-3 { animation-delay: 180ms; }
+.fade-delay-4 { animation-delay: 240ms; }
+.fade-delay-5 { animation-delay: 300ms; }
+.fade-delay-6 { animation-delay: 360ms; }
+.fade-delay-7 { animation-delay: 420ms; }
+.fade-delay-8 { animation-delay: 480ms; }
